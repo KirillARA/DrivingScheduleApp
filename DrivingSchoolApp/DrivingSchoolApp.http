@@ -1,0 +1,6 @@
+@DrivingSchoolApp_HostAddress = http://localhost:5044
+
+GET {{DrivingSchoolApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
