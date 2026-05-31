@@ -16,6 +16,29 @@
     public enum ExamResult
     {
         сдал,
-        не_сдал 
+        не_сдал
+    }
+
+    public enum EmployeeRole
+    {
+        преподаватель,
+        инструктор,
+        администратор,
+        директор
+    }
+
+    public enum LicenseCategoryName
+    {
+        B,
+        C,
+        A,
+        D,
+        E
+     
+    }
+    public enum TransmissionType
+    {
+        механика,
+        автомат
     }
 }

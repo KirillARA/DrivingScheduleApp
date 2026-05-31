@@ -7,8 +7,8 @@
         public DateOnly ДатаРождения { get; set; }
         public string Телефон { get; set; }
         public string Паспорт { get; set; }
-        public string Группа { get; set; }             // название группы
-        public string Тариф { get; set; }              // название тарифа
-        public string Инструктор { get; set; }         // ФИО активного инструктора
+        public string Группа { get; set; }             
+        public string Тариф { get; set; }              
+        public string Инструктор { get; set; }         
     }
 }

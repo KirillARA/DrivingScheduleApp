@@ -4,16 +4,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingSchoolApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/tariffs")]
 [ApiController]
-public class ТарифController : ControllerBase
+public class TariffsController : ControllerBase
 {
     private readonly DataService _dataService;
-    public ТарифController(DataService dataService) => _dataService = dataService;
+    public TariffsController(DataService dataService) => _dataService = dataService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TariffDto>>> GetAll()
-        => Ok(await _dataService.GetAllTariffsAsync());
+    public async Task<ActionResult<IEnumerable<TariffDto>>> GetAll(
+        [FromQuery] string? name,
+        [FromQuery] decimal? minPrice,
+        [FromQuery] decimal? maxPrice,
+        [FromQuery] int? minHours,
+        [FromQuery] int? maxHours,
+        [FromQuery] string? category,
+        [FromQuery] string? transmission)
+    {
+        var items = await _dataService.GetAllTariffsAsync(name, minPrice, maxPrice, minHours, maxHours, category, transmission);
+        return Ok(items);
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TariffDto>> GetById(int id)

@@ -4,16 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingSchoolApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/theory-lessons")]
 [ApiController]
-public class Теоретическое_занятиеController : ControllerBase
+public class TheoryLessonsController : ControllerBase
 {
     private readonly DataService _dataService;
-    public Теоретическое_занятиеController(DataService dataService) => _dataService = dataService;
+    public TheoryLessonsController(DataService dataService) => _dataService = dataService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TheoryLessonDto>>> GetAll()
-        => Ok(await _dataService.GetAllTheoryLessonsAsync());
+    public async Task<ActionResult<IEnumerable<TheoryLessonDto>>> GetAll(
+        [FromQuery] string? group,
+        [FromQuery] string? teacher,
+        [FromQuery] DateOnly? dateFrom,
+        [FromQuery] DateOnly? dateTo)
+    {
+        var items = await _dataService.GetAllTheoryLessonsAsync(group, teacher, dateFrom, dateTo);
+        return Ok(items);
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TheoryLessonDto>> GetById(int id)

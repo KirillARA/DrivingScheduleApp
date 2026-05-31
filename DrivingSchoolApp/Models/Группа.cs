@@ -7,7 +7,7 @@ public class Группа
     public int id_категории { get; set; }
     public DateOnly дата_начала { get; set; }
     public DateOnly? дата_окончания { get; set; }
-    public string статус { get; set; } = null!; 
+    public GroupStatus статус { get; set; } 
     public int макс_учеников { get; set; }
     public int текущ_учеников { get; set; }
 

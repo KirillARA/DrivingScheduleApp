@@ -1,4 +1,6 @@
-﻿namespace DrivingSchoolApp.DTO
+﻿using DrivingSchoolApp.Models;
+
+namespace DrivingSchoolApp.DTO
 {
     public class GroupDto
     {

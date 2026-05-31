@@ -3,7 +3,7 @@
 public class Категория_прав
 {
     public int id_категории { get; set; }
-    public string название { get; set; } = null!;
+    public string название { get; set; }
     public string? описание { get; set; }
 
     public virtual ICollection<Группа> Группаs { get; set; } = new List<Группа>();

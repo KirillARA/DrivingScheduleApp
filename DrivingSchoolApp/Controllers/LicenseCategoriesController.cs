@@ -4,30 +4,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingSchoolApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/license-categories")]
 [ApiController]
-public class УченикController : ControllerBase
+public class LicenseCategoriesController : ControllerBase
 {
     private readonly DataService _dataService;
-    public УченикController(DataService dataService) => _dataService = dataService;
+    public LicenseCategoriesController(DataService dataService) => _dataService = dataService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<StudentDto>>> GetAll()
-        => Ok(await _dataService.GetAllStudentsAsync());
+    public async Task<ActionResult<IEnumerable<LicenseCategoryDto>>> GetAll([FromQuery] string? name)
+    {
+        var items = await _dataService.GetAllLicenseCategoriesAsync(name);
+        return Ok(items);
+    }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<StudentDto>> GetById(int id)
+    public async Task<ActionResult<LicenseCategoryDto>> GetById(int id)
     {
-        var item = await _dataService.GetStudentByIdAsync(id);
+        var item = await _dataService.GetLicenseCategoryByIdAsync(id);
         return item == null ? NotFound() : Ok(item);
     }
 
     [HttpPost]
-    public async Task<ActionResult<StudentDto>> Create(StudentDto dto)
+    public async Task<ActionResult<LicenseCategoryDto>> Create(LicenseCategoryDto dto)
     {
         try
         {
-            var created = await _dataService.CreateStudentAsync(dto);
+            var created = await _dataService.CreateLicenseCategoryAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
         catch (Exception ex)
@@ -37,12 +40,12 @@ public class УченикController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, StudentDto dto)
+    public async Task<IActionResult> Update(int id, LicenseCategoryDto dto)
     {
         if (id != dto.Id) return BadRequest("ID mismatch");
         try
         {
-            var updated = await _dataService.UpdateStudentAsync(id, dto);
+            var updated = await _dataService.UpdateLicenseCategoryAsync(id, dto);
             return updated == null ? NotFound() : Ok(updated);
         }
         catch (Exception ex)
@@ -54,7 +57,7 @@ public class УченикController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _dataService.DeleteStudentAsync(id);
+        var deleted = await _dataService.DeleteLicenseCategoryAsync(id);
         return deleted ? NoContent() : NotFound();
     }
 }

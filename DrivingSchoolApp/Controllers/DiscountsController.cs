@@ -4,16 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingSchoolApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/discounts")]
 [ApiController]
-public class СкидкаController : ControllerBase
+public class DiscountsController : ControllerBase
 {
     private readonly DataService _dataService;
-    public СкидкаController(DataService dataService) => _dataService = dataService;
+    public DiscountsController(DataService dataService) => _dataService = dataService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DiscountDto>>> GetAll()
-        => Ok(await _dataService.GetAllDiscountsAsync());
+    public async Task<ActionResult<IEnumerable<DiscountDto>>> GetAll(
+        [FromQuery] string? name,
+        [FromQuery] int? minPercent,
+        [FromQuery] int? maxPercent)
+    {
+        var items = await _dataService.GetAllDiscountsAsync(name, minPercent, maxPercent);
+        return Ok(items);
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<DiscountDto>> GetById(int id)

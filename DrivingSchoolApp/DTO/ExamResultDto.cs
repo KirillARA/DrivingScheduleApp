@@ -1,5 +1,9 @@
-﻿public class ExamResultDto
+﻿using DrivingSchoolApp.Models;
+
+public class ExamResultDto
 {
+    public int УченикId { get; set; }
+    public int ЭкзаменId { get; set; }
     public string Ученик { get; set; }
     public string Экзамен { get; set; }
     public DateOnly ДатаПопытки { get; set; }

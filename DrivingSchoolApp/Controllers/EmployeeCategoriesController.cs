@@ -4,16 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingSchoolApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/employee-categories")]
 [ApiController]
-public class ПринадлежностьСотрудникаController : ControllerBase
+public class EmployeeCategoriesController : ControllerBase
 {
     private readonly DataService _dataService;
-    public ПринадлежностьСотрудникаController(DataService dataService) => _dataService = dataService;
+
+    public EmployeeCategoriesController(DataService dataService)
+        => _dataService = dataService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EmployeeCategoryDto>>> GetAll()
-        => Ok(await _dataService.GetAllEmployeeCategoriesAsync());
+    public async Task<ActionResult<IEnumerable<EmployeeCategoryDto>>> GetAll(
+        [FromQuery] string? employee,
+        [FromQuery] string? category)
+    {
+        var items = await _dataService.GetAllEmployeeCategoriesAsync(employee, category);
+        return Ok(items);
+    }
 
     [HttpGet("{employeeId}/{categoryId}")]
     public async Task<ActionResult<EmployeeCategoryDto>> GetById(int employeeId, int categoryId)
@@ -36,7 +43,6 @@ public class ПринадлежностьСотрудникаController : Contro
         }
     }
 
-    // Для этой сущности в сервисе нет метода Update, только Create и Delete.
     [HttpDelete("{employeeId}/{categoryId}")]
     public async Task<IActionResult> Delete(int employeeId, int categoryId)
     {

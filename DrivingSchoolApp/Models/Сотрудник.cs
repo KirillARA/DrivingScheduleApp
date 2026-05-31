@@ -10,7 +10,7 @@ public class Сотрудник
     public string паспорт_серия { get; set; } = null!;
     public string паспорт_номер { get; set; } = null!;
     public DateOnly дата_приема { get; set; }
-    public string роль { get; set; } = null!; 
+    public EmployeeRole роль { get; set; }
 
     public virtual ICollection<ПринадлежностьСотрудника> ПринадлежностиСотрудника { get; set; } = new List<ПринадлежностьСотрудника>();
     public virtual ICollection<ЗакреплениеУченика> ЗакрепленияУченика { get; set; } = new List<ЗакреплениеУченика>();

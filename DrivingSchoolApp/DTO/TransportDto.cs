@@ -8,5 +8,6 @@
         public string Госномер { get; set; }
         public string Категория { get; set; }          // название категории
         public int Пробег { get; set; }
+        public string КоробкаПередач { get; set; }
     }
 }

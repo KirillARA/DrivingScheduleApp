@@ -26,9 +26,11 @@ public partial class LibraryContext : DbContext
     public virtual DbSet<ПринадлежностьСотрудника> Принадлежности_сотрудников { get; set; }
     public virtual DbSet<ЗакреплениеУченика> Закрепления_учеников { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Настройки представлений (оставьте как есть, они уже были в проекте)
+       
         modelBuilder.Entity<view_driving_schedule>(entity =>
         {
             entity.HasNoKey().ToView("view_driving_schedule");
@@ -61,7 +63,7 @@ public partial class LibraryContext : DbContext
             entity.Property(e => e.телефон).HasMaxLength(20);
         });
 
-        // Сотрудник
+        
         modelBuilder.Entity<Сотрудник>(entity =>
         {
             entity.HasKey(e => e.id_сотрудника);
@@ -72,7 +74,7 @@ public partial class LibraryContext : DbContext
             entity.Property(e => e.дата_приема).HasDefaultValueSql("CURRENT_DATE");
         });
 
-        // Категория прав
+        
         modelBuilder.Entity<Категория_прав>(entity =>
         {
             entity.HasKey(e => e.id_категории);
@@ -81,12 +83,12 @@ public partial class LibraryContext : DbContext
             entity.Property(e => e.название).HasMaxLength(10);
         });
 
-        // Группа
+        
         modelBuilder.Entity<Группа>(entity =>
         {
             entity.HasKey(e => e.id_группы);
             entity.ToTable("Группа");
-            entity.Property(e => e.статус).HasConversion<string>();
+            //entity.Property(e => e.статус).HasConversion<string>();
             entity.Property(e => e.текущ_учеников).HasDefaultValue(0);
             entity.HasOne(d => d.id_категорииNavigation)
                 .WithMany(p => p.Группаs)
@@ -94,7 +96,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Тариф
+        
         modelBuilder.Entity<Тариф>(entity =>
         {
             entity.HasKey(e => e.id_тарифа);
@@ -105,7 +107,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Ученик
+        
         modelBuilder.Entity<Ученик>(entity =>
         {
             entity.HasKey(e => e.id_ученика);
@@ -122,7 +124,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Транспорт
+        
         modelBuilder.Entity<Транспорт>(entity =>
         {
             entity.HasKey(e => e.id_транспорта);
@@ -134,7 +136,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Теоретическое занятие
+        
         modelBuilder.Entity<Теоретическое_занятие>(entity =>
         {
             entity.HasKey(e => e.id_теорзан);
@@ -149,7 +151,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Практическое занятие
+        
         modelBuilder.Entity<Практическое_занятие>(entity =>
         {
             entity.HasKey(e => e.id_практзан);
@@ -168,7 +170,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Экзамен
+        
         modelBuilder.Entity<Экзамен>(entity =>
         {
             entity.HasKey(e => e.id_экзамена);
@@ -179,12 +181,20 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        // Результаты экзамена
+        
         modelBuilder.Entity<РезультатыЭкзамена>(entity =>
         {
             entity.HasKey(e => new { e.id_ученика, e.id_экзамена, e.дата_попытки });
             entity.ToTable("РезультатыЭкзамена");
             entity.Property(e => e.дата_попытки).HasDefaultValueSql("CURRENT_DATE");
+
+
+            entity.Property(e => e.результат)
+                .HasConversion(
+                    v => v == ExamResult.не_сдал ? "не сдал" : v.ToString(),
+                    v => v == "не сдал" ? ExamResult.не_сдал : Enum.Parse<ExamResult>(v)
+                );
+
             entity.HasOne(d => d.id_ученикаNavigation)
                 .WithMany(p => p.РезультатыЭкзаменаs)
                 .HasForeignKey(d => d.id_ученика)
@@ -195,14 +205,14 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Скидка
+        
         modelBuilder.Entity<Скидка>(entity =>
         {
             entity.HasKey(e => e.id_скидки);
             entity.ToTable("Скидка");
         });
 
-        // СкидкаТариф
+        
         modelBuilder.Entity<СкидкаТариф>(entity =>
         {
             entity.HasKey(e => new { e.id_скидки, e.id_тарифа });
@@ -218,7 +228,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ПринадлежностьСотрудника
+        
         modelBuilder.Entity<ПринадлежностьСотрудника>(entity =>
         {
             entity.HasKey(e => new { e.id_сотрудника, e.id_категории });
@@ -233,7 +243,7 @@ public partial class LibraryContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ЗакреплениеУченика
+        
         modelBuilder.Entity<ЗакреплениеУченика>(entity =>
         {
             entity.HasKey(e => new { e.id_ученика, e.id_сотрудника, e.дата_закрепления });
@@ -247,6 +257,19 @@ public partial class LibraryContext : DbContext
                 .WithMany(p => p.ЗакрепленияУченика)
                 .HasForeignKey(d => d.id_сотрудника)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.id);
+
+            entity.ToTable("users");
+
+            entity.Property(e => e.login)
+                .HasMaxLength(100);
+
+            entity.Property(e => e.password)
+                .HasMaxLength(100);
         });
 
         OnModelCreatingPartial(modelBuilder);
